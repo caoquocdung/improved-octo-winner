@@ -85,9 +85,9 @@ def user_read_safe(user: User, current_user: User) -> dict:
     return base
 
 
-async def is_user_active(session: AsyncSession, user_id: int) -> bool:
-    user = await get_user_by_id(session, user_id)
-    return user.status if user else False
+# async def is_user_active(session: AsyncSession, user_id: int) -> bool:
+#     user = await get_user_by_id(session, user_id)
+#     return user.status if user else False
 
 
 async def delete_user(session: AsyncSession, user: User):
