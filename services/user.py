@@ -53,10 +53,10 @@ async def update_user_details(
     # Phân quyền: chỉ chính chủ hoặc admin mới update
     if current_user.id != user_id and current_user.role != UserRole.ADMIN:
         raise PermissionError("Not authorized")
-    # Không cho phép update role nếu không phải admin
+    # Không cho phép update role thành admin
     data = user_in.model_dump(exclude_unset=True)
-    if "role" in data and current_user.role != UserRole.ADMIN:
-        data.pop("role")
+    if "role" in data and data["role"] == UserRole.ADMIN:
+        raise PermissionError("You are not allowed to set role as admin")
     if "password" in data and data["password"]:
         data["hashed_password"] = get_password_hash(data.pop("password"))
     for key, value in data.items():
@@ -87,7 +87,7 @@ def user_read_safe(user: User, current_user: User) -> dict:
 
 async def is_user_active(session: AsyncSession, user_id: int) -> bool:
     user = await get_user_by_id(session, user_id)
-    return user.is_active if user else False
+    return user.status if user else False
 
 
 async def delete_user(session: AsyncSession, user: User):

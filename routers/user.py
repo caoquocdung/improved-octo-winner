@@ -33,7 +33,7 @@ async def login(
     user = await get_user_by_username(session, form_data.username)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    if not user.is_active:
+    if user.status == "inactive":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User is inactive")
     access_token = create_access_token({"sub": str(user.id)})
     return {"access_token": access_token, "token_type": "bearer"}
@@ -45,7 +45,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSe
     if not payload or "sub" not in payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     user = await get_user_by_id(session, int(payload["sub"]))
-    if not user or not user.is_active:
+    if not user or user.status == "inactivee":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found or inactive")
     return user
 
