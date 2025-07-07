@@ -45,7 +45,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), session: AsyncSe
     if not payload or "sub" not in payload:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
     user = await get_user_by_id(session, int(payload["sub"]))
-    if not user or user.status == "inactivee":
+    if not user or user.status == "inactive":
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found or inactive")
     return user
 

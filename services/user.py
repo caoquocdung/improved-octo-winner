@@ -31,7 +31,7 @@ async def create_user(session: AsyncSession, user_in: UserCreate) -> User:
         return user
     except IntegrityError:
         await session.rollback()
-        raise ValueError("Username hoặc Email đã tồn tại!")
+        raise ValueError("Username or Email is exist!")
 
 
 async def get_user_by_id(session: AsyncSession, user_id: int) -> User | None:
