@@ -6,11 +6,13 @@ from routers import user
 
 from contextlib import asynccontextmanager
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield
+
 
 app = FastAPI(
     title="Manga Reader API",
@@ -29,6 +31,7 @@ app.add_middleware(
 )
 
 app.include_router(user.router)
+
 
 @app.get("/")
 async def root():

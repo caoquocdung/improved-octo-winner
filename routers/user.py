@@ -3,10 +3,10 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from security import create_access_token, decode_access_token
 from database import get_db
-from models import User, UserRole
+from models import User
 from schemas.user import UserCreate, UserRead, UserUpdate
 from services.user import (
-    create_user, get_user_by_id, get_user_by_email, get_user_by_username,
+    create_user, get_user_by_id, get_user_by_username,
     update_user_details, verify_password, user_read_safe, anonymize_user
 )
 from pydantic import BaseModel
@@ -90,16 +90,16 @@ async def get_user_by_username_route(
         raise HTTPException(status_code=404, detail="User not found")
     return user_read_safe(user, current_user)
 
-@router.get("/by-email/{email}", response_model=UserRead)
-async def get_user_by_email_route(
-    email: str,
-    session: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    user = await get_user_by_email(session, email)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user_read_safe(user, current_user)
+# @router.get("/by-email/{email}", response_model=UserRead)
+# async def get_user_by_email_route(
+#     email: str,
+#     session: AsyncSession = Depends(get_db),
+#     current_user: User = Depends(get_current_user)
+# ):
+#     user = await get_user_by_email(session, email)
+#     if not user:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     return user_read_safe(user, current_user)
 
 @router.post("/{user_id}/anonymize", response_model=UserRead)
 async def anonymize_user_route(
