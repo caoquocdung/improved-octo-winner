@@ -27,6 +27,11 @@ class UserStatus(enum.Enum):
     BANNED = "banned"
 
 
+class GroupRole(enum.Enum):
+    LEADER = "leader"
+    MEMBER = "member"
+
+
 class ApproveStatus(enum.Enum):
     PENDING = "pending"
     APPROVED = "approved"
@@ -51,6 +56,9 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     group_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("groups.id"), nullable=True
+    )
+    group_role: Mapped[Optional[GroupRole]] = mapped_column(
+        SAEnum(GroupRole), nullable=True
     )
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[Optional[str]] = mapped_column(
@@ -117,17 +125,17 @@ class Group(Base):
 
 
 # --------------- UserGroup ---------------
-class UserGroup(Base):
-    __tablename__ = "user_group"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"))
-    joined_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
-    )
+# class UserGroup(Base):
+#     __tablename__ = "user_group"
+#     id: Mapped[int] = mapped_column(primary_key=True)
+#     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+#     group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"))
+#     joined_at: Mapped[datetime] = mapped_column(
+#         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
+#     )
 
-    user: Mapped["User"] = relationship()
-    group: Mapped["Group"] = relationship()
+#     user: Mapped["User"] = relationship()
+#     group: Mapped["Group"] = relationship()
 
 
 # --------------- Story ---------------

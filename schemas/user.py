@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
-from models import UserRole, UserStatus
+from models import UserRole, UserStatus, GroupRole
 
 
 class UserCreate(BaseModel):
@@ -12,23 +12,24 @@ class UserCreate(BaseModel):
 
 class UserRead(BaseModel):
     id: int
-    group_id: Optional[int]
+    group_id: Optional[int] = None
+    group_role: Optional[GroupRole] = None
     username: str
-    email: Optional[EmailStr]
+    email: Optional[EmailStr] = None
     role: UserRole
     status: UserStatus
     created_at: datetime
-    updated_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr]
+    email: Optional[EmailStr] = None
     password: Optional[str] = Field(None, min_length=8, max_length=128)
-    status: Optional[UserStatus]
-    role: Optional[UserRole]
+    status: Optional[UserStatus] = None
+    # role: Optional[UserRole] = None
 
     class Config:
         from_attributes = True
